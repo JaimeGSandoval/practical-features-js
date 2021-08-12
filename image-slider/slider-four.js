@@ -20,9 +20,9 @@ const createNavigationDots = () => {
 };
 
 const setActiveClass = () => {
-  const currentActive = document.querySelector('.slide-image.active');
-  currentActive.classList.remove('active');
-  slideImage[currentSlide].classList.add('active');
+  // const currentActive = document.querySelector('.slide-image.active');
+  // currentActive.classList.remove('active');
+  // slideImage[currentSlide].classList.add('active');
 
   const currentDot = document.querySelector('.single-dot.active');
   currentDot.classList.remove('active');
@@ -70,7 +70,7 @@ const init = () => {
     img.style.left = i * 100 + '%';
   });
 
-  slideImage[0].classList.add('active');
+  // slideImage[0].classList.add('active');
 
   createNavigationDots();
 };
