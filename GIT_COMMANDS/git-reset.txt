@@ -1,0 +1,146 @@
+GIT RESET
+https://www.atlassian.com/git/tutorials/undoing-changes/git-reset
+
+// The git reset command is a complex and versatile tool for undoing changes. It has three primary forms of invocation. These forms correspond to command line arguments --soft, --mixed, --hard. The three arguments each correspond to Git's three internal state management mechanism's, The Commit Tree (HEAD), The Staging Index, and The Working Directory.
+
+
+// GIT RESET & THREE TREES OF GIT
+To properly understand git reset usage, we must first understand Git's internal state management systems. Sometimes these mechanisms are called Git's "three trees". Trees may be a misnomer, as they are not strictly traditional tree data-structures. They are, however, node and pointer-based data structures that Git uses to track a timeline of edits.
+
+
+// THE WORKING DIRECTORY
+The first tree we will examine is "The Working Directory". This tree is in sync with the local filesystem and is representative 
+of the immediate changes made to content in files and directories. Git status can be used to show changes to the Working Directory. They will be displayed in the red with a 'modified' prefix.
+
+
+// STAGING INDEX
+Next up is the 'Staging Index' tree. This tree is tracking Working Directory changes, that have been promoted with git add, to be stored in the next commit. This tree is a complex internal caching mechanism. After using git add <file>, invoking git status now shows <file> in green under "Changes to be committed"
+
+
+// COMMIT HISTORY
+The final tree is the Commit History. The git commit command adds changes to a permanent snapshot that lives in the Commit History. This snapshot also includes the state of the Staging Index at the time of commit. Invoking git status at this point shows that there are no pending changes to any of the trees. Executing git log will display the Commit History. Now that we have followed this changeset through the three trees we can begin to utilize git reset.
+
+
+// HOW IT WORKS
+At a surface level, git reset is similar in behavior to git checkout. Where git checkout solely operates on the HEAD ref pointer, git reset will move the HEAD ref pointer and the current branch ref pointer. To better demonstrate this behavior consider the following example:
+
+	A B C D <- HEAD, main
+
+This example above demonstrates a sequence of commits on the main branch. The HEAD ref and main branch ref currently point to commit d. Now let us execute and compare, both git checkout b and git reset b.  
+
+	git checkout B
+	
+	A B C D <- main
+          ^
+          | HEAD
+
+With git checkout, the main ref is still pointing to D. The HEAD ref has been moved, and now points at commit B. The repo is now in a 'detached HEAD' state. 
+
+	git reset B
+
+	A B C D 
+          ^
+	  | HEAD, main
+
+Comparatively, git reset, moves both the HEAD and branch refs to the specified commit.In addition to updating the commit ref pointers, git reset will modify the state of the three trees. The ref pointer modification always happens and is an update to the third tree, the Commit tree. The command line arguments --soft, --mixed, and --hard direct how to modify the Staging Index, and Working Directory trees.
+
+
+// MAIN OPTIONS
+The default invocation of git reset has implicit arguments of --mixed and HEAD. This means executing git reset is equivalent to executing git reset --mixed HEAD. In this form HEAD is the specified commit. Instead of HEAD any Git SHA-1 commit hash can be used.
+
+	The scope of git reset modes:
+
+						  --mixed
+				 ___________________|__________________
+				|                                      |
+	
+	
+	working directory   ->	staged snapshot	   ->	commit history
+
+							|_____________|
+							       |
+                                                              --soft
+       |______________________________________________________________|
+                                      |
+				     --hard
+
+
+// --hard
+This is the most direct, DANGEROUS, and frequently used option. When passed --hard The Commit History ref pointers are updated to the specified commit. Then, the Staging Index and Working Directory are reset to match that of the specified commit. Any previously pending changes to the Staging Index and the Working Directory gets reset to match the state of the Commit Tree. This means any pending work that was hanging out in the Staging Index and Working Directory will be lost.
+
+When executing a "hard reset" using the --hard option. Git displays output indicating that HEAD is pointing to the latest commit. Next, we check the state of the repo with git status. Git indicates there are no pending changes. We also examine the state of the Staging Index and see that it has been reset to a point before new_file was added. Our modifications to reset_lifecycle_file and the addition of new_file have been destroyed. This data loss cannot be undone, this is critical to take note of.
+
+
+// --mixed
+This is the default operating mode. The ref pointers are updated. The Staging Index is reset to the state of the specified commit. Any changes that have been undone from the Staging Index are moved to the Working Directory.
+
+Here we have executed a "mixed reset". To reiterate, --mixed is the default mode and the same effect as executing git reset. Examining the output from git status and git ls-files, shows that the Staging Index has been reset to a state where reset_lifecycle_file is the only file in the index. The object SHA for reset_lifecycle_file has been reset to the previous version.
+
+After running --mixed the important things to take note of here is that git status shows us that there are modifications to index.html and there is an untracked file: new_file. This is the explicit --mixed behavior. The Staging Index has been reset and the pending changes have been moved into the Working Directory. Compare this to the --hard reset case where the Staging Index was reset and the Working Directory was reset as well, losing these updates.
+
+--mixed moves HEAD and updates the staging area, but not the working the directory.
+
+
+// --soft
+When the --soft argument is passed, the ref pointers are updated and the reset stops there. The Staging Index and the Working Directory are left untouched.
+
+We have executed a 'soft reset'. Examining the repo state with git status and git ls-files shows that nothing has changed. This is expected behavior. A soft reset will only reset the Commit History. By default, git reset is invoked with HEAD as the target commit. Since our Commit History was already sitting on HEAD and we implicitly reset to HEAD nothing really happened. To better understand and utilize --soft we need a target commit that is not HEAD.
+
+We will be going back in time to previous commit. To do this we will need the commit's ID. This can be done by using git log. Once you've located the ID you can use it with git reset --soft <ID>
+
+We can examine the repo state output and note some interesting observations. First, git status indicates there are modifications to reset_lifecycle_file and highlights them indicating they are changes staged for the next commit. Second, the git ls-files input indicates that the Staging Index has not changed and retains the SHA 67cc52710639e5da6b515416fd779d0741e3762e we had earlier.
+
+git log will only show the commit of the very forst commit made because that's the commit ID we passed in. The log output now shows that there is a single commit in the Commit History. This helps to clearly illustrate what --soft has done. As with all git reset invocations, the first action reset takes is to reset the commit tree. Our previous examples with --hard and --mixed have both been against the HEAD and have not moved the Commit Tree back in time. During a soft reset, this is all that happens.
+
+This may then be confusing as to why git status indicates there are modified files. --soft does not touch the Staging Index, so the updates to our Staging Index followed us back in time through the commit history. This can be confirmed by the output of git ls-files -s showing that the SHA for reset_lifecycle_file is unchanged. As a reminder, git status does not show the state of 'the three trees', it essentially shows a diff between them. In this case, it is displaying that the Staging Index is ahead of the changes in the Commit History as if we have already staged them.
+
+--soft moves HEAD but doesn't touch the staging area or the working directory. 
+
+Use --soft when you want to move another commit and patch things up without "losing your place". It's rare that you use it.
+
+
+// RESETTING vs REVERTING
+If git revert is a “safe” way to undo changes, you can think of git reset as the dangerous method. There is a real risk of losing work with git reset. Git reset will never delete a commit, however, commits can become 'orphaned' which means there is no direct path from a ref to access them. These orphaned commits can usually be found and restored using git reflog. Git will permanently delete any orphaned commits after it runs the internal garbage collector. By default, Git is configured to run the garbage collector every 30 days. Commit History is one of the 'three git trees' the other two, Staging Index and Working Directory are not as permanent as Commits. Care must be taken when using this tool, as it’s one of the only Git commands that have the potential to lose your work.
+
+WHEREAS REVERTING IS DESIGNED TO SAFELY UNDO A PUBLIC COMMIT, GIT RESET IS DESIGNED TO UNDO LOCAL CHANGES TO THE STAGING INDEX AND WORKING DIRECTORY. BECAUSE OF THEIR DISTINCT GOALS, THE TWO COMMANDS ARE IMPLEMENTED DIFFERENTLY: RESETTING COMPLETELY REMOVES A CHANGESET, WHEREAS REVERTING MAINTAINS THE ORIGINAL CHANGESET AND USES A NEW COMMIT TO APPLY THE UNDO.
+
+
+// DON'T RESET PUBLIC HISTORY
+You should never use git reset after any snapshots have been pushed to a public repository. After publishing a commit, you have to assume that other developers are reliant upon it. Removing a commit that other team members have continued developing poses serious problems for collaboration. When they try to sync up with your repository, it will look like a chunk of the project history abruptly disappeared.
+
+As soon as you add new commits after the reset, Git will think that your local history has diverged from origin/main, and the merge commit required to synchronize your repositories is likely to confuse and frustrate your team.
+
+THE POINT IS, MAKE SURE THAT YOU'RE USING GIT RESET ON A LOCAL EXPERIMENT THAT WENT WRONG—NOT ON PUBLISHED CHANGES. IF YOU NEED TO FIX A PUBLIC COMMIT, THE GIT REVERT COMMAND WAS DESIGNED SPECIFICALLY FOR THIS PURPOSE.
+
+
+// EXAMPLES
+
+git reset <file>
+
+Remove the specified file from the staging area, but leave the working directory unchanged. This unstages a file without overwriting any changes. Move the current branch tip backward to commit, reset the staging area to match, but leave the working directory alone. All changes made since  will reside in the working directory, which lets you re-commit the project history using cleaner, more atomic snapshots.
+
+git reset
+
+Reset the staging area to match the most recent commit, but leave the working directory unchanged. This unstages all files without overwriting any changes, giving you the opportunity to re-build the staged snapshot from scratch.
+
+git reset --hard
+
+Reset the staging area and the working directory to match the most recent commit. In addition to unstaging changes, the --hard flag tells Git to overwrite all changes in the working directory, too. Put another way: this obliterates all uncommitted changes, so make sure you really want to throw away your local developments before using it. Move the current branch tip backward to   and reset both the staging area and the working directory to match. This obliterates not only the uncommitted changes, but all commits after, as well.
+
+
+
+// UNSTAGING A FILE
+The git reset command is frequently encountered while preparing the staged snapshot. git reset helps you keep your commits highly-focused by letting you unstage changes that aren’t related to the next commit.
+
+
+
+// REMOVING LOCAL COMMITS
+The next example shows a more advanced use case. It demonstrates what happens when you’ve been working on a new experiment for a while, but decide to completely throw it away after committing a few snapshots.
+
+	git reset HEAD~<number>
+
+The git reset HEAD~2 command moves the current branch backward by two commits, effectively removing the two snapshots we just created from the project history. Remember that this kind of reset should only be used on unpublished commits. NEVER PERFORM THE ABOVE OPERATION IF YOU'VE ALREADY PUSHED YOUR COMMITS TO A SHARED RESPOSITORY. 
+
+
+// SUMMARY
+To review, git reset is a powerful command that is used to undo local changes to the state of a Git repo. Git reset operates on "The Three Trees of Git". These trees are the Commit History (HEAD), the Staging Index, and the Working Directory. There are three command line options that correspond to the three trees. The options --soft, --mixed, and --hard can be passed to git reset.

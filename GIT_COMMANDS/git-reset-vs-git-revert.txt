@@ -1,0 +1,5 @@
+DIFFERENCE BETWEEN GIT RESET VS GIT REVERT
+	
+Git reset is a command to "fix uncommitted mistakes" and git revert is a command to "fix committed mistakes"
+
+ 

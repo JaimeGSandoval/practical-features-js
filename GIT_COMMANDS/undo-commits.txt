@@ -1,0 +1,109 @@
+*** USEFUL GIT COMMANDS
+- Change remotes to a new remote
+git remote set-url origin https://github.com/JaimeGSandoval/bork-frens
+
+- Remove a Remote
+git remote remove upstream
+
+
+// UNDO THE MOST RECENT COMMIT
+
+$ git commit -m "Something terribly misguided" # (0: Your Accident)
+$ git reset HEAD~                              # (1)
+[ edit files as necessary ]                    # (2)
+$ git add .                                    # (3)
+$ git commit -c ORIG_HEAD                      # (4)
+
+1. This command is responsible for the undo. It will undo your last commit while leaving your working tree (the state of your files on disk) untouched. You'll need to add them again before you can commit them again).
+
+2. Make corrections to working tree files.
+
+3. 'git add' anything that you want to include in your new commit.
+
+4. Commit the changes, reusing the old commit message. reset copied the old head to .git/ORIG_HEAD; commit with -c ORIG_HEAD will open an editor, which initially contains the log message from the old commit and allows you to edit it. If you do not need to edit the message, you could use the -C option.
+
+Alternatively, to edit the previous commit (or just its commit message), commit --amend will add changes within the current index to the previous commit.
+
+To remove (not revert) a commit that has been pushed to the server, rewriting history with git push origin master --force is necessary.
+
+
+
+// HOW TO UNDO A PUBLIC COMMIT WITH GIT REVERT
+https://www.atlassian.com/git/tutorials/undoing-changes
+
+Let's assume we are back to our original commit history example. The history that includes the 872fa7e commit. This time let's try a revert 'undo'. If we execute git revert HEAD, Git will create a new commit with the inverse of the last commit. This adds a new commit to the current branch history and now makes it look like:
+
+	git log --oneline
+        e2f9a78 Revert "Try something crazy"
+        872fa7e Try something crazy
+        a1e8fb5 Make some important changes to hello.txt
+        435b61d Create hello.txt
+        9773e52 Initial import
+
+At this point, we have again technically 'undone' the 872fa7e commit. Although 872fa7e still exists in the history, the new e2f9a78 commit is an inverse of the changes in 872fa7e. Unlike our previous checkout strategy, we can continue using the same branch. This solution is a satisfactory undo. This is the ideal 'undo' method for working with public shared repositories. If you have requirements of keeping a curated and minimal Git history this strategy may not be satisfactory.
+
+
+
+// HOW TO UNDO A COMMIT WITH GIT RESET
+https://www.atlassian.com/git/tutorials/undoing-changes
+
+For this undo strategy we will continue with our working example. git reset is an extensive command with multiple uses and functions. If we invoke git reset --hard a1e8fb5 the commit history is reset to that specified commit. Examining the commit history with git log before the applying 'git reset --hard a1e8fb5':
+
+	git log --oneline
+        e2f9a78 Revert "Try something crazy"
+        872fa7e Try something crazy
+        a1e8fb5 Make some important changes to hello.txt
+        435b61d Create hello.txt
+        9773e52 Initial import
+ 
+will now look like this:
+
+	git log --oneline
+        a1e8fb5 Make some important changes to hello.txt
+        435b61d Create hello.txt
+        9773e52 Initial import
+
+The log output shows the e2f9a78 and 872fa7e commits no longer exist in the commit history. At this point, we can continue working and creating new commits as if the 'crazy' commits never happened. This method of undoing changes has the cleanest effect on history. Doing a reset is great for local changes however it adds complications when working with a shared remote repository. If we have a shared remote repository that has the 872fa7e commit pushed to it, and we try to git push a branch where we have reset the history, Git will catch this and throw an error. Git will assume that the branch being pushed is not up to date because of it's missing commits. In these scenarios, git revert should be the preferred undo method
+
+
+
+// UNDOING THE LAST COMMIT MESSAGE WITH GIT COMMIT --AMMEND
+https://www.atlassian.com/git/tutorials/undoing-changes
+
+In the previous section, we discussed different strategies for undoing commits. These strategies are all applicable to the most recent commit as well. In some cases though, you might not need to remove or reset the last commit. Maybe it was just made prematurely. In this case you can amend the most recent commit. Once you have made more changes in the working directory and staged them for commit by using git add, you can execute git commit --amend. This will have Git open the configured system editor and let you modify the last commit message. The new changes will be added to the amended commit.
+
+
+
+
+// THE WORKING DIRECTORY
+https://www.atlassian.com/git/tutorials/undoing-changes
+
+The working directory is generally in sync with the local file system. To undo changes in the working directory you can edit files like you normally would using your favorite editor. Git has a couple utilities that help manage the working directory. There is the 'git clean' command which is a convenience utility for undoing changes to the working directory. Additionally, git reset can be invoked with the --mixed or --hard options and will apply a reset to the working directory.
+
+
+
+// THE STAGING INDEX
+https://www.atlassian.com/git/tutorials/undoing-changes
+
+The git add command is used to add changes to the staging index. Git reset is primarily used to undo the staging index changes. A --mixed reset will move any pending changes from the staging index back into the working directory.
+
+
+
+// UNDOING PUBLIC CHANGES
+https://www.atlassian.com/git/tutorials/undoing-changes
+
+When working on a team with remote repositories, extra consideration needs to be made when undoing changes. Git reset should generally be considered a 'local' undo method. A reset should be used when undoing changes to a private branch. This safely isolates the removal of commits from other branches that may be in use by other developers. Problems arise when a reset is executed on a shared branch and that branch is then pushed remotely with git push. Git will block the push in this scenario complaining that the branch being pushed is out of date from the remote branch as it is missing commits.
+
+The preferred method of undoing shared history is git revert. A revert is safer than a reset because it will not remove any commits from a shared history. A revert will retain the commits you want to undo and create a new commit that inverts the undesired commit. This method is safer for shared remote collaboration because a remote developer can then pull the branch and receive the new revert commit which undoes the undesired commit.
+
+
+// SUMMARY
+
+We covered many high-level strategies for undoing things in Git. It's important to remember that there is more than one way to 'undo' in a Git project. Most of the discussion on this page touched on deeper topics that are more thoroughly explained on pages specific to the relevant Git commands. The most commonly used 'undo' tools are git checkout, git revert, and git reset. Some key points to remember are:
+
+	- Once changes have been committed they are generally permanent
+	- Use git checkout to move around and review the commit history
+	- git revert is the best tool for undoing shared public changes
+	- git reset is best used for undoing local private changes
+
+In addition to the primary undo commands, we took a look at other Git utilities: git log for finding lost commits git clean for undoing uncommitted changes git add for modifying the staging index.

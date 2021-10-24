@@ -1,0 +1,76 @@
+GIT RM
+https://www.atlassian.com/git/tutorials/undoing-changes/git-rm
+
+The git rm command is used to remove files from a Git repository. It can be thought of as the inverse of the git add command
+
+The git rm command can be used to remove individual files or a collection of files. The primary function of git rm is to remove tracked files from the Git index. Additionally, git rm can be used to remove files from both the staging index and the working directory. There is no option to remove a file from only the working directory. The files being operated on must be identical to the files in the current HEAD. If there is a discrepancy between the HEAD version of a file and the staging index or working tree version, Git will block the removal. This block is a safety mechanism to prevent removal of in-progress changes.
+
+The git rm command removes a file from a Git repository. This command removes a file from your file system and then removes it from the list of files tracked by a Git repository. The --cached flag lets you delete a file from a Git repository without deleting it on your file system. The file to be removed must be staged for git rm to work.
+
+
+// USAGE 
+
+
+	git rm <file>
+
+
+Specifies the target files to remove. The option value can be an individual file, a space delimited list of files file1 file2 file3, or a wildcard file glob (~./directory/*).
+
+
+	-f
+	--force
+
+
+The -f option is used to override the safety check that Git makes to ensure that the files in HEAD match the current content in the staging index and working directory.
+
+
+	-n
+	--dry-run
+
+
+The "dry run" option is a safeguard that will execute the git rm command but not actually delete the files. Instead it will output which files it would have removed
+
+	--
+
+The separator option is used to explicitly distinguish between a list of file names and the arguments being passed to git rm. This is useful if some of the file names have syntax that might be mistaken for other options.
+
+	
+	--cached
+
+
+The cached option specifies that the removal should happen only on the staging index. Working directory files will be left alone.
+
+
+
+// HOW TO UNDO GIT RM
+
+Executing git rm is not a permanent update. The command will update the staging index and the working directory. These changes will not be persisted until a new commit is created and the changes are added to the commit history. This means that the changes here can be "undone" using common Git commands.
+
+
+	git reset HEAD
+
+A reset will revert the current staging index and working directory back to the HEAD commit. This will undo a git rm.
+
+
+	git checkout .
+
+
+A checkout will have the same effect and restore the latest version of a file from HEAD.
+
+In the event that git rm was executed and a new commit was created which persist the removal, git reflog can be used to find a ref that is before the git rm execution. 
+
+
+// THE SCOPE OF GIT RM 
+
+The git rm command operates on the current branch only. The removal event is only applied to the working directory and staging index trees. The file removal is not persisted to the repository history until a new commit is created.
+
+
+
+// WHY USE GIT RMINSTEAD OF RM
+
+A Git repository will recognize when a regular shell rm command has been executed on a file it is tracking. It will update the working directory to reflect the removal. It will not update the staging index with the removal. An additional git add command will have to be executed on the removed file paths to add the changes to the staging index. The git rm command acts a shortcut in that it will update the working directory and the staging index with the removal.
+
+
+// SUMMARY
+
+git rm is a command that operates on two of the primary Git internal state management trees: the working directory, and staging index. git rm is used to remove a file from a Git repository. It is a convenience method that combines the effect of the default shell rm command with git add. This means that it will first remove a target from the filesystem and then add that removal event to the staging index. 
