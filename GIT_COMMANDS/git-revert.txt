@@ -20,7 +20,9 @@ Note that the 3rd commit is still in the project history after the revert. Inste
 
 // RESETTING VS REVERTING
 
-It's important to understand that git revert undoes a single commit—it does not "revert" back to the previous state of a project by removing all subsequent commits. In Git, this is actually called a reset, not a revert.
+IT'S IMPORTANT TO UNDERSTAND THAT GIT REVERT UNDOES A SINGLE COMMIT. iTDOES NOT REVERT BACK TO THE PREVIOUS STATE OF A PROJECT BY REMOVING ALL SUBSEQUENT COMMITS. IN GIT, THIS IS ACTUALLY CALLED A RESET, NOT A REVERT. 
+
+IF YOU NEED TO REVERT MULTIPLE COMMITS, IT'S BEST THAT YOU DO EACH ONE BY ONE NSTEAD OF IN A BULK. REVERTING MULTIPLE COMMITS IN ONE BULK CAN CAUSE MERGING ISSUES. DON'T DO IT. 
 
 Reverting has two important advantages over resetting. First, it doesn’t change the project history, which makes it a "safe" operation for commits that have already been published to a shared repository.
 

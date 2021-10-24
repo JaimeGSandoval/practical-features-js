@@ -45,7 +45,50 @@ The first line is the chunk header. Each chunk is prepended by a header inclosed
 
 In this header example, 6 lines have been extracted starting from line number 34. Additionally, 8 lines have been added starting at line number 34. 
 
+
+// COMPARING FILES
+The git diff command can be passed an explicit file path option. When a file path is passed to git diff the diff operation will be scoped to the specified file. The below examples demonstrate this usage.
+
+	git diff HEAD ./path/to/file
+
+This example is scoped to ./path/to/file when invoked, it will compare the specific changes in the working directory, against the index, showing the changes that are not staged yet. By default git diff will execute the comparison against HEAD. Omitting HEAD in the example above git diff ./path/to/file has the same effect.
+
+	git diff --cached ./path/to/file
+
+When git diff is invoked with the --cached option the diff will compare the staged changes with the local repository. The --cached option is synonymous with --staged.
+
+
+// COMPARING ALL CHANGES
+Invoking git diff without a file path will compare changes across the entire repository. The above, file specific examples, can be invoked without the ./path/to/file argument and have the same output results across all files in the local repo.
+
+
+// CHANGES SINCE LAST COMMIT
+By default git diff will show you any uncommitted changes since the last commit.
 The remaining content of the diff chunk displays the recent changes. Each changed line is prepended with a + or - symbol indicating which version of the diff input the changes come from. As we previously discussed, - indicates changes from the a/diff_test.txt and + indicates changes from b/diff_test.txt
 
 
+// COMPARING FILES BETWEEN TWO DIFFERENT COMMITS
+git diff can be passed Git refs to commits to diff. Some example refs are, HEAD, tags, and branch names. Every commit in Git has a commit ID which you can get when you execute GIT LOG. You can also pass this commit ID to git diff.
 	
+
+
+// COMPARING BRANCHES
+	
+	Comparing two branches:
+	   Branches are compared like all other ref inputs to git diff
+
+           git diff branch1..other-feature-branch
+
+	This example introduces the dot operator. The two dots in this example indicate the diff input is the tips of both 	branches. The same effect happens if the dots are omitted and a space is used between the branches. Additionally, there 	is a three dot operator:
+
+	git diff branch1...other-feature-branch
+
+	The three dot operator initiates the diff by changing the first input parameter branch1. It changes branch1 into a ref 	of the shared common ancestor commit between the two diff inputs, the shared ancestor of branch1 and other-feature-	branch. The last parameter input parameter remains unchanged as the tip of other-feature-branch.
+
+
+// Comparing files from two branchesCOMPARING FILES FROM FROM TWO BRANCHES	
+To compare a specific file across branches, pass in the path of the file as the third argument to git diff
+
+	git diff main new_branch ./diff_test.txt
+
+
