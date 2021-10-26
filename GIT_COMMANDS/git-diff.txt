@@ -92,3 +92,14 @@ To compare a specific file across branches, pass in the path of the file as the 
 	git diff main new_branch ./diff_test.txt
 
 
+
+// CHUNK HEADERS
+Each chunk is a number of lines that have been extracted for this specific chunk for the sake of comparison. It 	     does not represent the total number of lines that have changed.
+
+	   @@ -3,4 +3,5 @@
+
+		This reads as such: 
+			-3 represents file A
+			+3 represents file B
+                         4 represents the chunk size for file A
+                         5 represents the chunk size for file B 

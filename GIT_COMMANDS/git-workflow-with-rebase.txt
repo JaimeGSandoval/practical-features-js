@@ -1,0 +1,41 @@
+** THE INSTRUCTIONS HERE MAY BE FLAWED BY REBASING WITH MASTER.
+
+GIT WORKFLOW WITH REBASE
+https://www.themoderncoder.com/a-better-git-workflow-with-rebase/
+
+On the development team I work with, we’ve successfully adopted the workflow I’m about to show you and it works well for us. 
+
+When I start development I always make sure the code on my local machine is synced to the latest commit from remote master
+
+	# With my local master branch checked out
+	git pull
+
+Next, I’ll check out a new branch so I can write and commit code to this branch – keeping my work separated from the master branch
+
+	git checkout -b my_cool_feature
+
+As I’m developing my feature, I’ll make a few commits
+
+	git add .
+	git commit -m 'This is a new commit, yay!'
+
+Note: while I’m developing it’s likely that my fellow developers will have shipped some of their own changes to remote master. That’s ok, we can deal with that later.
+
+Now that I’m done developing my feature, I want to merge my changes back into remote master. To begin this process I’ll switch back to local master branch and pull the latest changes. This ensures my local machine has any new commits submitted by my teammates.
+
+	git checkout master
+	git pull
+
+What I want to do now is make sure my feature will jive with any new changes from remote master. To do this, I’ll checkout my feature branch and rebase against my local master. This will re-anchor my branch against the latest changes I just pulled from remote master. Additionally at this point, Git will let me know if I have any conflicts and I can take care of them on my branch
+
+	git checkout my_cool_feature
+	git rebase master
+
+Now that my feature branch doesn’t have any conflicts, I can switch back to my master branch and place my changes onto master.
+
+	git checkout master
+	git rebase my_cool_feature
+
+Since I synced with remote master before doing the rebase, I should be able to push my changes up to remote master without issues.
+
+	git push

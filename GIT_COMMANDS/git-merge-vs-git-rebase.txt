@@ -1,0 +1,17 @@
+GIT MERGE VS GIT REBASE 
+https://www.themoderncoder.com/a-better-git-workflow-with-rebase/
+
+// THE BASICS
+Out of the gate, the goal of both merging and rebasing is to take commits from a feature branch and put them onto another branch. Let’s start with how a quote-on-quote “normal” merge makes that happen.
+
+// MERGING
+Say I have a graph that looks like this. As you can see, I split off my feature branch at commit 2, and have done a bit of work.
+	
+If I run a merge, git will stuff all of my changes from my feature branch into one large merge commit that contains ALL of my feature branch changes. It will then place this special merge commit onto master. When this happens, the tree will show your feature branch, as well as the master branch. Going further, if you imagine working on a team with other developers, your git tree can become complex: displaying everybody else’s branches and merges.
+
+// REBASING
+Now let’s take a look at how rebase would handle this same situation. Instead of doing a git merge, I’ll do a git rebase. What rebase will do is take all of the commits on your feature branch and move them on top of the master commits. Behind the scenes, git is actually blowing away the feature branch commits and duplicating them as new commits on top of the master branch (remember, under the hood, commit objects are immutable and immovable). What you get with this approach is a nice clean tree with all your commits laid out nicely in a row, like a timeline. Easy to trace.
+
+
+
+
