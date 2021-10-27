@@ -33,7 +33,7 @@ If you were to run 'git branch' you would not see any branches listed other than
 
 So if there's a remote branch named 'origin/puppies' you'd un:
 
-	'git checkout puppies' or 'git checkout --track origin/puppies'
+	git checkout --track origin/puppies
 
 You would then have the branch locally and git will connect the puppies branch to the remote origin/puppies branch automatically. You can then work on the branch as usual. 
 
