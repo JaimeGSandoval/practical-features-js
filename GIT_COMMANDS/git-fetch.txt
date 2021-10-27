@@ -1,0 +1,66 @@
+GIT FETCH
+
+The git fetch command downloads commits, files, and refs from a remote repository into your local repo. Fetching is what you do when you want to see what everybody else has been working on. It’s similar to svn update in that it lets you see how the central history has progressed, but it doesn’t force you to actually merge the changes into your repository. Git isolates fetched content from existing local content; it has absolutely no effect on your local development work. This makes fetching a safe way to review commits before integrating them with your local repository.
+
+When downloading content from a remote repo, git pull and git fetch commands are available to accomplish the task. You can consider git fetch the 'safe' version of the two commands. It will download the remote content but not update your local repo's working state, leaving your current work intact. git pull is the more aggressive alternative; it will download the remote content for the active local branch and immediately execute git merge to create a merge commit for the new remote content. If you have pending changes in progress this will cause conflicts and kick-off the merge conflict resolution flow.
+
+	git fetch <remote>
+	git fetch <remote> <branch>
+	git fetch <all>
+
+// GIT FETCH A REMOTE BRANCH
+
+The following example will demonstrate how to fetch a remote branch and update your local working state to the remote contents. In this example, let us assume there is a central repo origin from which the local repository has been cloned from using the git clone command. Let us also assume an additional remote repository named coworkers_repo that contains a feature_branch which we will configure and fetch. With these assumptions set let us continue the example.
+
+Firstly we will need to configure the remote repo using the git remote command.
+
+	git remote add coworkers_repo git@bitbucket.org:coworker/coworkers_repo.git
+
+
+Here we have created a reference to the coworker's repo using the repo URL. We will now pass that remote name to git fetch to download the contents.
+
+	git fetch coworkers_repo coworkers/feature_branch
+
+We now locally have the contents of coworkers/feature_branch we will need the integrate this into our local working copy. We begin this process by using the git checkout command to checkout the newly downloaded remote branch.
+
+	git checkout coworkers/feature_branch
+
+The output from this checkout operation indicates that we are in a detached HEAD state. This is expected and means that our HEAD ref is pointing to a ref that is not in sequence with our local history. Being that HEAD is pointed at the coworkers/feature_branch ref, we can create a new local branch from that ref. The 'detached HEAD' output shows us how to do this using the git checkout command:
+
+	git checkout -b local_feature_branch
+
+Here we have created a new local branch named local_feature_branch. This puts updates HEAD to point at the latest remote content and we can continue development on it from this point.
+
+
+// SYNCHRONIZE ORIGIN WITH GIT GETCH
+
+
+The following example walks through the typical workflow for synchronizing your local repository with the central repository's main branch
+
+	git fetch origin
+
+This will display the branches that were downloaded:
+
+	a1e8fb5..45e66a4 main -> origin/main
+	a1e8fb5..9e8ab1c develop -> origin/develop
+	* [new branch] some-feature -> origin/some-feature
+
+To see what commits have been added to the upstream main, you can run a git log using origin/main as a filter: 
+
+	git log --oneline main..origin/main
+
+To approve the changes and merge them into your local main branch use the following commands:
+
+	git checkout main
+	git log origin/main
+
+Then we can use git merge origin/main:
+
+	git merge origin/main
+
+The origin/main and main branches now point to the same commit, and you are synchronized with the upstream developments.
+	
+// SUMMARY
+In review, git fetch is a primary command used to download contents from a remote repository. git fetch is used in conjunction with git remote, git branch, git checkout, and git reset to update a local repository to the state of a remote. The git fetch command is a critical piece of collaborative git work flows. git fetch has similar behavior to git pull, however, git fetch can be considered a safer, nondestructive version.
+
+

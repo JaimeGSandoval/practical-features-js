@@ -103,3 +103,15 @@ Each chunk is a number of lines that have been extracted for this specific chunk
 			+3 represents file B
                          4 represents the chunk size for file A
                          5 represents the chunk size for file B 
+
+
+// git diff
+Without additional options, git diff lists all the changes in our working directory that are not staged for the next 		commit
+
+// git diff HEAD
+lists all changes in the working tree since your last commit, staged or not
+
+// git diff --cached will list the changes between the staging area and our last commit. It's like saying "Show me will be included in my commit if I run git commit right now"
+
+// git diff HEAD <file>
+will show the difference between last commit and the file given as an argument

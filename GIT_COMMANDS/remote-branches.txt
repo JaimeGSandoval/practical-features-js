@@ -1,0 +1,43 @@
+REMOTE BRANCHES
+
+A remote tracking branch is a reference to the state of the master branch on the remote to the state of the master branch on the remote. I can't move this myself. It's like a bookmark pointing to the last known commit on the master branch on origin. "At the time you last communicated with this remote repo, here is where x branch was pointing"
+
+They follow the pattern <remote/branch>
+	
+	'origin/master' references the state of the master branch on the remote repo named origin
+
+	'upstream/logoRedesign' references the state of the logoRedesign branch of the remote named upstream (a common remote 	name)	
+
+To view a remote branches our local repo knows about run 
+
+	'git branch -r'
+
+
+// CHECKING OUT A REMOTE BRANCH
+if you want to know what the project looked like when you cloned it or since you last got an update you can run :
+	
+	git checkout origin/master
+
+This will put you in a detached HEAD state
+
+// WORKING WITH REMOTE BRANCHES
+When you clone a repo, we have all the data and git history for the project at that moment in time. However, that does not mean it's all in my workspace.
+
+The github repo has a branch named puppies, but when I run git branch I don't see it on my machine. All I have is the mster branch. But if you look at the remote branches with:
+
+	 'git branch -r' 
+
+you'll see them listed as <remote/branch>. So the local repo knows about those branches. It has a remote tracking reference where it can tell you where each one of them is, like a bookmark. 
+
+If you were to run 'git branch' you would not see any branches listed other than master/main. In order to get the branch locally you can run 'git checkout --track <remote/branch>'
+
+So if there's a remote branch named 'origin/puppies' you'd un:
+
+	'git checkout puppies' or 'git checkout --track origin/puppies'
+
+You would then have the branch locally and git will connect the puppies branch to the remote origin/puppies branch automatically. You can then work on the branch as usual. 
+
+So if someone needs help or something needs to be done on a branch that existed when you cloned or forked the repo, you can go ahead and follow the steps above. But if it's a new branch that was added after you cloned or forked, you'll have to run git fetch first. Otherwise, there is no way your local repo will know about that branch. It would work without fetching if the branch existed when you cloned the repo, but if it is an entirely new branch, you will have to fetch first. 
+
+
+
