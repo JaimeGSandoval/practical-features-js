@@ -1,0 +1,34 @@
+GIT PULL
+
+The git pull command is used to fetch and download content from a remote repository and immediately update the local repository to match that content. Merging remote upstream changes into your local repository is a common task in Git-based collaboration work flows. The git pull command is actually a combination of two other commands, git fetch followed by git merge. In the first stage of operation git pull will execute a git fetch scoped to the local branch that HEAD is pointed at. Once the content is downloaded, git pull will enter a merge workflow. A new merge commit will be-created and HEAD updated to point at the new commit.
+
+The git pull command first runs git fetch which downloads content from the specified remote repository. Then a git merge is executed to merge the remote content refs and heads into a new local merge commit.
+
+A --rebase option can be passed to git pull to use a rebase merging strategy instead of a merge commit. The next example will demonstrate how a rebase pull works. Assume that we are at a starting point of our first diagram, and we have executed git pull --rebase.
+
+We can now see that a rebase pull does not create the new H commit. Instead, the rebase has copied the remote commits A--B--C and rewritten the local commits E--F--G to appear after them them in the local origin/main commit history.
+
+// COMMAND OPTIONS 
+
+	git pull <remote>
+		Fetch the specified remote’s copy of the current branch and immediately merge it into the local copy. This is 		the same as git fetch ＜remote＞ followed by git merge origin/＜current-branch＞.
+
+	git pull --no-commit <remote>
+		Similar to the default invocation, fetches the remote content but does not create a new merge commit.
+		
+	git pull --rebase <remote>
+		Same as the previous pull Instead of using git merge to integrate the remote branch with the local one, use git 		rebase.
+
+
+// GIT PULL VS GIT FETCH	
+The git fetch command can be confused with git pull. They are both used to download remote content. An important safety distinction can be made between git pull and get fetch. git fetch can be considered the "safe" option whereas, git pull can be considered unsafe. git fetch will download the remote content and not alter the state of the local repository. Alternatively, git pull will download remote content and immediately attempt to change the local state to match that content. This may unintentionally cause the local repository to get in a conflicted state.
+
+// PULLING VIA REBASE
+The --rebase option can be used to ensure a linear history by preventing unnecessary merge commits. Many developers prefer rebasing over merging, since it’s like saying, "I want to put my changes on top of what everybody else has done." In this sense, using git pull with the --rebase flag is even more like svn update than a plain git pull.
+
+In fact, pulling with --rebase is such a common workflow that there is a dedicated configuration option for it:
+
+	git config --global branch.autosetuprebase always
+
+After running that command, all git pull commands will integrate via git rebase instead of git merge.
+

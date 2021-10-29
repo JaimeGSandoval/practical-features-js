@@ -29,7 +29,7 @@ The github repo has a branch named puppies, but when I run git branch I don't se
 
 you'll see them listed as <remote/branch>. So the local repo knows about those branches. It has a remote tracking reference where it can tell you where each one of them is, like a bookmark. 
 
-If you were to run 'git branch' you would not see any branches listed other than master/main. In order to get the branch locally you can run 'git checkout --track <remote/branch>'
+If you were to run 'git branch' you would not see any branches listed other than master/main. In order to get the branches locally you can run 'git checkout --track <remote/branch>'
 
 So if there's a remote branch named 'origin/puppies' you'd un:
 

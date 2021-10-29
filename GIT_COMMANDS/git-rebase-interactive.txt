@@ -1,0 +1,46 @@
+GIT REBASE INTERACTIVE
+
+Running git rebase with the -i option will enter the interactive mode, which allows us to edit commits, add files, drop commits, etc. Note that we need to specify how far back we want to rewrite commits (HEAD~4).
+
+Also, we are not rebasing onto another branch. Instead, we are rebasing a series of commits onto the HEAD they currently are based on. So insteadof rebasing with the main branch, we rebase on the branch we're on. So it would be:
+
+	git rebase -i HEAD~4
+
+and not
+
+	git rebase main while on the feature the feature branch
+
+
+//GIT REBASE -I PROCESS
+
+While on the brnach you want to rebase the commits, run the git rebase -i command specifying how far back you;d like to go:
+
+	git rebase -i HEAD~9
+
+In our text editor, we'll see a list of commits{listed from oldest at top to newest at bottom) alongside a list of commands that we can choose from. Here are a couple of the more commonly used commands:
+
+	pick - use the commit
+	reword - use the commit, but edit the commit message
+	edit - use commit, but stop for amending
+	fixup - use commit contents but meld it into previous commit and discard the commit message
+	drop - remove commit
+
+ 
+The commits will be listed in the editor along with a command next to them. It'll look as such with pick as the default command: 
+
+	pick f7f36d Change name
+	pick 31001f Update README
+	pick a5k89v Add cat file
+
+
+The editor will show a list of commits with a command next to them that's telling git what to do with them. When you have chosen ehat to do with each commit (say you wan to reword a commit message) you close out the nano editor. It will then reopen by itself giving you an opprotunity to change the message. 
+
+By running a command on a commit the commit hash will change for all of the commits listed. That's because every commit has to take into account the parent commit
+
+
+// COMMON WORKFLOW FOR AFTER REBASE INTERACTIVE IS DONE
+
+ Here's a pretty common workflow: 
+
+	- rebase to clean up a feature branch
+	- merge into master. 

@@ -1,0 +1,81 @@
+PULL REQUESTS
+
+In their simplest form, pull requests are a mechanism for a developer to notify team members that they have completed a feature. Once their feature branch is ready, the developer files a pull request. This lets everybody involved know that they need to review the code and merge it into the main branch.
+
+But, the pull request is more than just a notification—it’s a dedicated forum for discussing the proposed feature. If there are any problems with the changes, teammates can post feedback in the pull request and even tweak the feature by pushing follow-up commits. All of this activity is tracked directly inside of the pull request.
+
+
+// ANATOMY OF A PULL REQUEST
+
+When you file a pull request, all you’re doing is requesting that another developer (e.g., the project maintainer) pulls a branch from your repository into their repository. This means that you need to provide 4 pieces of information to file a pull request: the source repository, the source branch, the destination repository, and the destination branch.
+
+
+// HOW IT WORKS
+
+Pull requests can be used in conjunction with the Feature Branch Workflow, the Gitflow Workflow, or the Forking Workflow. But a pull request requires either two distinct branches or two distinct repositories, so they will not work with the Centralized Workflow. Using pull requests with each of these workflows is slightly different, but the general process is as follows:
+
+	- A developer creates the feature in a dedicated branch in their local repo.
+	- The developer pushes the branch to a public Github repository.
+	- The developer files a pull request via Github.
+	- The rest of the team reviews the code, discusses it, and alters it.
+	- The project maintainer merges the feature into the official repository and closes the pull request.
+
+
+
+// FEATURE BRANCH WORKFLOW WITH PULL REQUESTS
+
+The Feature Branch Workflow uses a shared Github repository for managing collaboration, and developers create features in isolated branches. But, instead of immediately merging them into main, developers should open a pull request to initiate a discussion around the feature before it gets integrated into the main codebase.
+
+There is only one public repository in the Feature Branch Workflow, so the pull request’s destination repository and the source repository will always be the same. Typically, the developer will specify their feature branch as the source branch and the main branch as the destination branch.
+
+After receiving the pull request, the project maintainer has to decide what to do. If the feature is ready to go, they can simply merge it into main and close the pull request. But, if there are problems with the proposed changes, they can post feedback in the pull request. Follow-up commits will show up right next to the relevant comments.
+
+It’s also possible to file a pull request for a feature that is incomplete. For example, if a developer is having trouble implementing a particular requirement, they can file a pull request containing their work-in-progress. Other developers can then provide suggestions inside of the pull request, or even fix the problem themselves with additional commits.
+
+
+// GITFLOW WORKFLOW WITH PULL REQUESTS
+
+The Gitflow Workflow is similar to the Feature Branch Workflow, but defines a strict branching model designed around the project release. Adding pull requests to the Gitflow Workflow gives developers a convenient place to talk about a release branch or a maintenance branch while they’re working on it.
+
+The mechanics of pull requests in the Gitflow Workflow are the exact same as the previous section: a developer simply files a pull request when a feature, release, or hotfix branch needs to be reviewed, and the rest of the team will be notified via Github.
+
+Features are generally merged into the develop branch, while release and hotfix branches are merged into both develop and main. Pull requests can be used to formally manage all of these merges.
+
+
+// FORKING WORKFLOW WITH PULL REQUESTS
+
+In the Forking Workflow, a developer pushes a completed feature to their own public repository instead of a shared one. After that, they file a pull request to let the project maintainer know that it’s ready for review.
+
+The notification aspect of pull requests is particularly useful in this workflow because the project maintainer has no way of knowing when another developer has added commits to their Github repository.
+
+Since each developer has their own public repository, the pull request’s source repository will differ from its destination repository. The source repository is the developer’s public repository and the source branch is the one that contains the proposed changes. If the developer is trying to merge the feature into the main codebase, then the destination repository is the official project and the destination branch is main.
+
+
+
+// MERGING PULL REQUESTS WITH CONFLICTS
+
+You can perform the merge and fix the conflicts on the command line like normal, or you can use github's interactive editor.
+
+
+// How to do it
+
+When a merge conflict happens when making a pulll request github will give you two opitons: You can fix the merge conflict on github, or you can fix it locally on the command line. Github will give you instructions for howto do it on the command line. 
+
+	- WHILE ON YOUR LOCAL MACHINE 
+	- Switch to the brnach in question. Merge in main and resolvwe the conflicts:	
+		
+		- while on main branch, run git fetch origin
+		- git checkout -b <feature-branch-to-fix>
+		- git merge main
+		- Fix conflicts
+
+	- Switch back to main branch with git checkout main
+	- Merge in the feature branch you just fixed that now has no conflicts
+	- push the changes to github
+
+		- git checkout main
+		- git merge <feature-branch-that's-been-fixed>
+		- git push origin main
+
+
+
