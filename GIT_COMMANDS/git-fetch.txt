@@ -21,7 +21,17 @@ Here we have created a reference to the coworker's repo using the repo URL. We w
 
 	git fetch coworkers_repo coworkers/feature_branch
 
-We now locally have the contents of coworkers/feature_branch we will need the integrate this into our local working copy. We begin this process by using the git checkout command to checkout the newly downloaded remote branch.
+We now locally have the contents of coworkers/feature_branch we will need the integrate this into our local working copy.
+
+To view all branches, including remote tracking branches run:
+
+	git branch -a
+
+To delete a remote tracking branch run:
+
+	git branch -d -r origin/<remote branch name> // the -r stands for 'remotes'
+
+We begin this process by using the git checkout command to checkout the newly downloaded remote branch.
 
 	git checkout coworkers/feature_branch
 
@@ -32,7 +42,7 @@ The output from this checkout operation indicates that we are in a detached HEAD
 Here we have created a new local branch named local_feature_branch. This puts updates HEAD to point at the latest remote content and we can continue development on it from this point.
 
 
-// SYNCHRONIZE ORIGIN WITH GIT GETCH
+// SYNCHRONIZE ORIGIN WITH GIT FETCH
 
 
 The following example walks through the typical workflow for synchronizing your local repository with the central repository's main branch
@@ -48,6 +58,8 @@ This will display the branches that were downloaded:
 To see what commits have been added to the upstream main, you can run a git log using origin/main as a filter: 
 
 	git log --oneline main..origin/main
+
+The main..origin/main range contains all of the commits that are in the origin/main remote/branch, but aren’t in your local main branch. In other words, this is how far feature has progressed since it forked off of main. 
 
 To approve the changes and merge them into your local main branch use the following commands:
 
